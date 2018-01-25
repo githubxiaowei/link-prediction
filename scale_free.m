@@ -2,10 +2,10 @@
 clear;
 tic;
 
-I = 10 ;    
-N = 50 ;  
-m0 = 3 ;    
-m = 3 ;    
+I = 3 ;    %
+N = 100 ;   % num of nodes in graph
+m0 = 3 ;   % initial num of nodes
+m = 3 ;    % num of nodes a new node will connect
 
 realization_of_distribution = sparse( I , N ) ;  
 for J = 1 : I   
