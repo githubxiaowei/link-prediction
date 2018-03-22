@@ -3,7 +3,7 @@ clear;
 tic;
 
 I = 3 ;    %
-N = 100 ;   % num of nodes in graph
+N = 50 ;   % num of nodes in graph
 m0 = 3 ;   % initial num of nodes
 m = 3 ;    % num of nodes a new node will connect
 
