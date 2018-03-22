@@ -3,9 +3,9 @@ clear;
 tic;
 
 I = 3 ;    %
-N = 50 ;   % num of nodes in graph
-m0 = 3 ;   % initial num of nodes
-m = 3 ;    % num of nodes a new node will connect
+N = 100 ;   % num of nodes in graph
+m0 = 10 ;   % initial num of nodes
+m = 6 ;    % num of nodes a new node will connect
 
 realization_of_distribution = sparse( I , N ) ;  
 for J = 1 : I   
@@ -28,26 +28,19 @@ for J = 1 : I
     end
     J
     for iteration = m0 + 1 : N
-        total_degree = 2 * m * ( iteration - 4 ) + 6 ; 
+        total_degree = 2 * m * ( iteration - m0 -1 ) + m0*(m0-1) ; %æ¯?æ¬¡æ?°å? m*2
         degree_frequency = node_degree / total_degree ;  
         cum_distribution = cumsum( degree_frequency ) ;  
 
         choose = zeros( 1 , m ) ;  
-        r1 = rand(1) ;   
-        choose(1) = find( cum_distribution >= r1 ,1) ;
-
-        r2 = rand(1) ;
-        choose(2) = find( cum_distribution >= r2 ,1 );
-        while choose(2) == choose(1)
-            r2 = rand(1) ;
-            choose(2) = find(  cum_distribution >= r2,1) ;
-        end
-
-        r3 = rand(1) ;
-        choose(3) = find( cum_distribution >= r3,1 ) ;
-        while ( choose(3) == choose(1) ) || ( choose(3) == choose(2) )
-            r3 = rand(1) ;
-            choose(3) = find( cum_distribution >= r3 ,1 ) ;
+        for new_edge = 1:m
+            r = rand(1) ;   
+            choose_edge = find( cum_distribution >= r ,1) ;
+            while any(choose == choose_edge)
+                r = rand(1) ;
+                choose_edge = find(  cum_distribution >= r,1) ;
+            end
+            choose(new_edge) = choose_edge;
         end
 
         for k = 1 : m
