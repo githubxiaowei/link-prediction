@@ -13,7 +13,7 @@ if nargin < 2; color = 'b'; end;
 R = 4 ;  % °ë¾¶R=4
 x0 = 5 ; y0 = 5 ;% Ô²ÐÄ×ø±ê(5,5)
 
-[ M , N ] = size( note_of_information ) ;
+N = size( note_of_information ,1) ;
 
 t = 1 : N ;
 t = t * 2 * pi / N ;
