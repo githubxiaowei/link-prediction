@@ -9,7 +9,7 @@ err = dis(f1,f2);
 
 lambda = 0.5;
 
-while(err > 0.001)
+while(err > 0.0001)
 
     for i = 1:V
         f2(:,i) = (...

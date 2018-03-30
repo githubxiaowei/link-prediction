@@ -1,11 +1,11 @@
-
-clear;
+function scale_free(N,m0,m)
+%
+%param  N: num of vertices
+%param m0: initial num of vertices
+%param  m: num of vertices a new node try to connect
 tic;
 
-I = 3 ;    %
-N = 100 ;   % num of nodes in graph
-m0 = 10 ;   % initial num of nodes
-m = 6 ;    % num of nodes a new node will connect
+I = 2 ;    %
 
 realization_of_distribution = sparse( I , N ) ;  
 for J = 1 : I   
@@ -28,7 +28,7 @@ for J = 1 : I
     end
     J
     for iteration = m0 + 1 : N
-        total_degree = 2 * m * ( iteration - m0 -1 ) + m0*(m0-1) ; %æ¯?æ¬¡æ?°å? m*2
+        total_degree = 2 * m * ( iteration - m0 -1 ) + m0*(m0-1) ; % m*2
         degree_frequency = node_degree / total_degree ;  
         cum_distribution = cumsum( degree_frequency ) ;  
 
@@ -73,3 +73,4 @@ loglog( x , y , 'r' ) ;  %  p(k)=2*m^2*k^(-3)
 
 toc;  
 
+end
