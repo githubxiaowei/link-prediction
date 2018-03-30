@@ -1,7 +1,7 @@
 function scale_free(N,m0,m)
 %
 %param  N: num of vertices
-%param m0: initial num of vertices
+%param m0: num of initial vertices
 %param  m: num of vertices a new node try to connect
 tic;
 
@@ -71,6 +71,6 @@ x = 1:N;
 y = 2 * m^2 * x .^ ( -3 ) ;
 loglog( x , y , 'r' ) ;  %  p(k)=2*m^2*k^(-3)
 
-toc;  
+toc;
 
 end

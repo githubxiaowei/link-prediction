@@ -48,7 +48,7 @@ fprintf('average accuracy: %g\n',average_acc);
 
 
 Draw_Circle(G);
-Draw_Circle(O);
+Draw_Circle(O1);
 Draw_Circle(D);
 Draw_Circle(P);
 end

@@ -3,11 +3,11 @@ function [P] = predictEdge(O,W,dropNum)
 
 Diag = sum(W);
 V = size(O,1);
-f1 = assign(O);
-f2 = zeros(size(O));
+f1 = assign(O)+rand(size(O))/100;
+f2 = zeros(size(O))+rand(size(O))/100;
 err = dis(f1,f2);
 
-lambda = 0.5;
+lambda = 1;
 
 while(err > 0.0001)
 
@@ -35,6 +35,13 @@ while(err > 0.0001)
     end
     err = dis(f1,f2);
 end
+
+global f01;
+global f02;
+f01 = f1;
+f02 = f2;
+
+err
 
 P = sparse(size(O,1),size(O,2));
 [~,SortedIdx] = sort(f1(:),'descend');

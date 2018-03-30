@@ -21,14 +21,16 @@ switch tcase
         Draw_Circle(P,'r')
         
     otherwise
-        scale_free(100,5,4);
+        scale_free(200,5,4);
         ld = load('adj_1');
         G = sparse(ld.adjacent_matrix);
         simi(G);
         for per = 0.1:0.1:0.9
             [ G, D, done ] = deleteEdges( G, per);
-            [per,done]
-            simi(G);
+            if done == 0
+                return
+            end
+            distribution(G)
         end
-
+end
 end
