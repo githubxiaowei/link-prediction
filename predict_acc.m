@@ -1,6 +1,8 @@
-function [average_acc] = predict_acc(G,per,total_iter)
+function [average_acc,average_auc] = predict_acc(G,per,total_iter)
 % 此处显示有关此函数的摘要
 %   此处显示详细说明
+
+global g_predict_rate;
 
 V = size(G,1);
 E = length(find(G))/2;
@@ -9,6 +11,7 @@ fprintf('num of edges in G: %g\n',E);
 fprintf('num of elements in matrix G: %g\n',E*2);
 
 average_acc = 0;
+average_auc = 0;
 for iter = 1:total_iter
     [O,D,done] = deleteEdges(G,per);
     if(~done)
@@ -22,14 +25,14 @@ for iter = 1:total_iter
     fprintf('num of remained edges: %g\n',remainNum);
 
     O1 = O;
-    predict_rate = 0.2;
+    predict_rate = g_predict_rate;
     predicted_num = 0;
 
     while predicted_num < dropNum
 
-    to_predict_num = min(floor(predict_rate*dropNum),dropNum-predicted_num);
-    W = simi(O);
-    P = predictEdge(O,W,to_predict_num);
+    to_predict_num = ...
+        max(1,min(floor(predict_rate*dropNum),dropNum-predicted_num));
+    [P,f] = predictEdge(O,to_predict_num,'similarity_only');
     O = O+P;
     predicted_num = predicted_num + to_predict_num;
 
@@ -38,18 +41,23 @@ for iter = 1:total_iter
     P = O-O1;
     fprintf('num of predicted edges: %g\n',assign(sum(P(:))/2));
     accuracy = assign(D(:)'*P(:)/sum(P(:)));
-    fprintf('accuracy: %g\n',accuracy);
+    auc = AUC(O1,D,f);
+    fprintf('accuracy: %g\tauc: %g\n',accuracy,auc);
     average_acc = average_acc + accuracy;
+    average_auc = average_auc + auc;
 
 end
 
 average_acc = average_acc/total_iter;
-fprintf('average accuracy: %g\n',average_acc);
+average_auc = average_auc/total_iter;
+fprintf('average_acc: %g\taverage_auc %g\n',...
+    average_acc,average_auc);
 
-
+%{
 Draw_Circle(G);
 Draw_Circle(O1);
 Draw_Circle(D);
 Draw_Circle(P);
+%}
 end
 

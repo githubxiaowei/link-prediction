@@ -26,7 +26,7 @@ for J = 1 : I
     for p = 1 : m0
         node_degree( p ) = sum( adjacent_matrix( 1 : m0 , p ) ) ;
     end
-    J
+
     for iteration = m0 + 1 : N
         total_degree = 2 * m * ( iteration - m0 -1 ) + m0*(m0-1) ; % m*2
         degree_frequency = node_degree / total_degree ;  
