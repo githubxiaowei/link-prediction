@@ -10,15 +10,16 @@ totalnum = sum(G(:))/2;
 targetnum = floor(totalnum*p);
 deletenum = 0;
 edge_num = length(find(G))/2;
-degree_percent = sum(G)/edge_num;
+%degree_percent = sum(G)/edge_num;
 
-for loop = 1:10
+for loop = 1:targetnum
     for i = randperm(size(G,1))
         for j = randperm(size(G,2))
             if(G(i,j) == 1 && ...
                 sum(G(i,:)) > 1 && sum(G(j,:)) > 1 && ...
-                deletenum < targetnum &&...
-                rand(1) < (degree_percent(i)+degree_percent(j))/2)
+                deletenum < targetnum )
+                %rand(1) < (degree_percent(i)+degree_percent(j))/2
+                
                 %delete edge in G
                 G(i,j) = 0;
                 G(j,i) = 0;
@@ -30,6 +31,7 @@ for loop = 1:10
                     done = 1;
                     return;
                 end
+                break;
             end
         end
     end

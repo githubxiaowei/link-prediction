@@ -1,5 +1,5 @@
 
-function [P,score] = predictEdge(O,dropNum,~)
+function [P,score] = predictEdge(O,dropNum)
 
 W = simi(O);
 V = size(O,1);

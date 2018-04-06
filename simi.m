@@ -2,6 +2,7 @@ function [ S ] =simi(adjacent_matrix)
 % calculate similarity matrix
 
 global g_similarity_type;
+global g_intrinsic_similarity;
 type = g_similarity_type;
     
 S = zeros(size(adjacent_matrix));
@@ -63,7 +64,7 @@ S = zeros(size(adjacent_matrix));
             S = inv(eye(size(adjacent_matrix))-belta*adjacent_matrix)...
                 -eye(size(adjacent_matrix));
 
-        case "test"
+        case "alpha"
             alpha_global = alpha(adjacent_matrix);
 
             for i = 1:size(adjacent_matrix,1)
@@ -81,6 +82,9 @@ S = zeros(size(adjacent_matrix));
                     S(j,i) = S(i,j);
                 end
             end
+            
+        case "global"
+            S = g_intrinsic_similarity;
             
         otherwise
             fprintf("ERROR: unknown similarity type.");

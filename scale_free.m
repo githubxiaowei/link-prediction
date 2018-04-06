@@ -63,6 +63,9 @@ for J = 1 : I
     save(['adj_',num2str(J)],'adjacent_matrix');
 end  
 
+%{ 
+%plot degree distribution 
+
 average = sum( realization_of_distribution )/ ( I * N );
 loglog( 1:N , average , '*' )  
 axis([1 N 0.0000001 0.9])
@@ -71,6 +74,7 @@ x = 1:N;
 y = 2 * m^2 * x .^ ( -3 ) ;
 loglog( x , y , 'r' ) ;  %  p(k)=2*m^2*k^(-3)
 
+%}
 toc;
 
 end
