@@ -30,7 +30,8 @@ for iter =1: N
         else
             for j = 1:length(rank)
                 toPick = indices(rank(j));
-                if toPick ~= fromNode && adjacent_matrix(fromNode,toPick) == 0 
+                if toPick ~= fromNode && ...
+                        adjacent_matrix(fromNode,toPick) == 0 
                     toNode = toPick;
                     break;
                 end
@@ -49,6 +50,8 @@ end
 
 x = 1:N;
 plot(x,degree);
-save('adj_1','adjacent_matrix');
 
 %}
+save('adj_1','adjacent_matrix');
+
+end

@@ -18,10 +18,10 @@ global g_intrinsic_similarity;
 
 
 %initiate global variables
-g_vertice_num = 500;
-g_similarity_only = false;
+g_vertice_num = 1000;
+g_similarity_only = true;
 g_similarity_type = "";
-g_predict_rate = 1;
+g_predict_rate = 0.2;
 g_delete_percent = 0.1;
 g_total_iteration = 10;
 g_score = [];
@@ -35,8 +35,8 @@ end
 g_intrinsic_similarity = g_intrinsic_features*g_intrinsic_features';
 
 % generate scarefree network and save it
-%scale_free(100,4,4);
-simpleNetwork(g_vertice_num,10);
+%scale_free(g_vertice_num,4,4);
+simpleNetwork(g_vertice_num,20);
 
 %load adjacent_matrix from file
 ld = load('adj_1');
@@ -45,19 +45,17 @@ G = sparse(ld.adjacent_matrix);
 simi_type = {"CN","Salton","LHN","Jaccard","AA","RA",...
     "Karz","alpha","global"};
 simi_type_num = length(simi_type);
+
 acc_list = zeros(simi_type_num,2);
 auc_list = zeros(simi_type_num,2);
+
 delete_per = g_delete_percent;
 total_iter = g_total_iteration;
 
-for idx = 1:simi_type_num
+for idx = 9
     g_similarity_type = string(simi_type(idx))
-    g_similarity_only = true
     [acc_list(idx,1),auc_list(idx,1)] = ...
         predict(G,delete_per,total_iter);
-    %g_similarity_only = false
-    %[acc_list(idx,2),auc_list(idx,2)] = ...
-     %   predict(G,delete_per,total_iter);
 end
 
 
