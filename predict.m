@@ -1,75 +1,69 @@
+function [average_acc,average_auc] = predict(G,per,total_iter)
+% 此处显示有关此函数的摘要
+%   此处显示详细说明
 
-close all;
-clear;
-
-
-%define global variables
-global g_vertice_num;
-global g_similarity_type;
-global g_similarity_only;
 global g_predict_rate;
-global g_delete_percent;
-global g_total_iteration;
-global g_score;
+
+V = size(G,1);
+E = length(find(G))/2;
+fprintf('num of vertices in G: %g\n',V);
+fprintf('num of edges in fully-connected G: %g\n',V*(V-1)/2);
+fprintf('num of edges in G: %g\n',E);
+fprintf('num of elements in matrix G: %g\n',E*2);
+
+average_acc = 0;
+average_auc = 0;
+for iter = 1:total_iter
+    fprintf('%g%% of edges to be deleted.......\n',100*per);
+    [O,D,done] = deleteEdges(G,per);
+    if(~done)
+        fprintf('ERROR: can not delete %g%% edges\n',100*per );
+        return;
+    end
+    dropNum = length(find(D))/2;
+    remainNum = length(find(O))/2;
+
+    fprintf('num of deleted edges: %g\n',dropNum);
+    fprintf('num of remained edges: %g\n',remainNum);
+
+    O1 = O;
+    predict_rate = g_predict_rate;
+    predicted_num = 0;
+
+    while predicted_num < dropNum
+
+        to_predict_num = ...
+            max(1,min(floor(predict_rate*dropNum),dropNum-predicted_num));
+        [P,f] = predictEdge(O,to_predict_num);
+        O = O+P;
+        predicted_num = predicted_num + to_predict_num;
+
+    end
+
+    P = O-O1;
+    fprintf('num of predicted edges: %g\n',assign(sum(P(:))/2));
+    accuracy = assign(D(:)'*P(:)/sum(P(:)));
+    auc = fastAUC(O1,D,f);
+    fprintf('accuracy: %g\tauc: %g\n',accuracy,auc);
+    average_acc = average_acc + accuracy;
+    average_auc = average_auc + auc;
+
+end
+
+average_acc = average_acc/total_iter;
+average_auc = average_auc/total_iter;
+fprintf('average_acc: %g\taverage_auc %g\n',...
+    average_acc,average_auc);
+
+%{
+Draw_Circle(G);
+Draw_Circle(O1);
+Draw_Circle(D);
+Draw_Circle(P);
+%}
 global g_O;
 global g_D;
-global g_intrinsic_features;
-global g_intrinsic_similarity;
-
-
-%initiate global variables
-g_vertice_num = 500;
-g_similarity_only = false;
-g_similarity_type = "";
-g_predict_rate = 1;
-g_delete_percent = 0.1;
-g_total_iteration = 10;
-g_score = [];
-g_O = [];
-g_D = [];
-g_intrinsic_features = rand(g_vertice_num,10);
-for i =1:g_vertice_num
-    len = sqrt(sum(g_intrinsic_features(i,:).^2));
-    g_intrinsic_features(i,:) = g_intrinsic_features(i,:)./len;
+g_O = O1;
+g_D = D;
 end
-g_intrinsic_similarity = g_intrinsic_features*g_intrinsic_features';
-
-% generate scarefree network and save it
-%scale_free(100,4,4);
-simpleNetwork(g_vertice_num,10);
-
-%load adjacent_matrix from file
-ld = load('adj_1');
-G = sparse(ld.adjacent_matrix);
-
-simi_type = {"CN","Salton","LHN","Jaccard","AA","RA",...
-    "Karz","alpha","global"};
-simi_type_num = length(simi_type);
-acc_list = zeros(simi_type_num,2);
-auc_list = zeros(simi_type_num,2);
-delete_per = g_delete_percent;
-total_iter = g_total_iteration;
-
-for idx = simi_type_num
-    g_similarity_type = string(simi_type(idx))
-    g_similarity_only = true
-    [acc_list(idx,1),auc_list(idx,1)] = ...
-        predict_acc(G,delete_per,total_iter);
-    g_similarity_only = false
-    [acc_list(idx,2),auc_list(idx,2)] = ...
-        predict_acc(G,delete_per,total_iter);
-end
-
-
-
-
-
-
-
-
-
-
-
-
-
 
