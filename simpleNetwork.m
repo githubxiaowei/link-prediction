@@ -52,6 +52,6 @@ x = 1:N;
 plot(x,degree);
 
 %}
-save('adj_1','adjacent_matrix');
+save('simpleNetwork','adjacent_matrix');
 
 end

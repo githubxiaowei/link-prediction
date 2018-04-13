@@ -3,29 +3,40 @@ function [average_acc,average_auc] = predict(G,per,total_iter)
 %   此处显示详细说明
 
 global g_predict_rate;
+global g_debug;
 
 V = size(G,1);
 E = length(find(G))/2;
-fprintf('num of vertices in G: %g\n',V);
-fprintf('num of edges in fully-connected G: %g\n',V*(V-1)/2);
-fprintf('num of edges in G: %g\n',E);
-fprintf('num of elements in matrix G: %g\n',E*2);
+
+if g_debug
+    fprintf('num of vertices in G: %g\n',V);
+    fprintf('num of edges in fully-connected G: %g\n',V*(V-1)/2);
+    fprintf('num of edges in G: %g\n',E);
+    fprintf('num of elements in matrix G: %g\n',E*2);
+end
 
 average_acc = 0;
 average_auc = 0;
+
 for iter = 1:total_iter
-    fprintf('%g%% of edges to be deleted.......\n',100*per);
+    if g_debug
+        fprintf('%g%% of edges to be deleted.......\n',100*per);
+    end
+    
     [O,D,done] = deleteEdges(G,per);
     if(~done)
         fprintf('ERROR: can not delete %g%% edges\n',100*per );
         return;
     end
+    
     dropNum = length(find(D))/2;
     remainNum = length(find(O))/2;
-
-    fprintf('num of deleted edges: %g\n',dropNum);
-    fprintf('num of remained edges: %g\n',remainNum);
-
+    
+    if g_debug
+        fprintf('num of deleted edges: %g\n',dropNum);
+        fprintf('num of remained edges: %g\n',remainNum);
+    end
+    
     O1 = O;
     predict_rate = g_predict_rate;
     predicted_num = 0;
@@ -41,10 +52,12 @@ for iter = 1:total_iter
     end
 
     P = O-O1;
-    fprintf('num of predicted edges: %g\n',assign(sum(P(:))/2));
+    if g_debug
+        fprintf('num of predicted edges: %g\n',assign(sum(P(:))/2));
+    end
     accuracy = assign(D(:)'*P(:)/sum(P(:)));
     auc = fastAUC(O1,D,f);
-    fprintf('accuracy: %g\tauc: %g\n',accuracy,auc);
+    fprintf('accuracy: %10g\tauc: %10g\n',accuracy,auc);
     average_acc = average_acc + accuracy;
     average_auc = average_auc + auc;
 
@@ -52,7 +65,7 @@ end
 
 average_acc = average_acc/total_iter;
 average_auc = average_auc/total_iter;
-fprintf('average_acc: %g\taverage_auc %g\n',...
+fprintf('average_acc: %10g\taverage_auc %10g\n',...
     average_acc,average_auc);
 
 %{

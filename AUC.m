@@ -1,10 +1,11 @@
 function [auc] = AUC(O,D,f)
 %UNTITLED2 此处显示有关此函数的摘要
 %   此处显示详细说明
-
-fprintf("Calculating GUC...");
-tic;
-
+global g_debug
+if g_debug
+    fprintf("Calculating GUC...");
+    tic;
+end
 node_num = size(f,1);
 n1 = 0;
 n2 = 0;
@@ -30,6 +31,9 @@ for i = 1:node_num
 end
 auc = (n1 + n2/2)/total;
 
-toc;
+if g_debug
+    toc;
+end
+
 end
 

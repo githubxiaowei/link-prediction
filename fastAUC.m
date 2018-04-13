@@ -1,9 +1,12 @@
 function [auc] = fastAUC(O,D,f)
 %UNTITLED2 此处显示有关此函数的摘要
 %   此处显示详细说明
+global g_debug
 
-fprintf("Calculating AUC...");
-tic;
+if g_debug
+    fprintf("Calculating AUC...");
+    tic;
+end
 
 upTriangle = triu(ones(size(O)),1);;
 O = O & upTriangle;
@@ -80,6 +83,9 @@ end
 
 auc = (n1 + n2/2)/total;
 
-toc;
+if g_debug
+    toc;
+end
+
 end
 

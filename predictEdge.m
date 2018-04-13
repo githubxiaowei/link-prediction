@@ -1,53 +1,59 @@
 
-function [P,score] = predictEdge(O,dropNum)
+function [P,score] = predictEdge(O,predictNum)
+
+global g_debug;
+global g_score;
+global g_similarity_only;
+global g_combine_similar_node_and_pair;
+
+if g_debug
+    tic;
+    fprintf("Predicting %d edge...",predictNum);
+end
 
 W = simi(O);
 V = size(O,1);
-global g_similarity_only;
 
 if g_similarity_only
     score = W;
 else
-    Diag = sum(W);
-    score = assign(O)+rand(size(O))/100;
-    score1 = zeros(size(O))+rand(size(O))/100;
-    err = dis(score,score1);
+    if g_combine_similar_node_and_pair
+        BaseScore = W; % combine node and pair similarity
+    else
+        BaseScore = O; % use pair similarity only
+    end
+    Diag = diag(sum(W));
+    score = BaseScore+rand(V)/100;
+    err = 1; % initial error above threshold
 
     lambda = 1;
 
-    while(err > 0.0001)
-
-        for i = 1:V
-            score1(:,i) = (...
-                V*V*eye(V) + ...
-                2*lambda*sum(W(:,i))*diag(Diag) -...
-                2*lambda*W(i,i)*W...
-                )\(...
-                V*V*O(:,i) +...
-                 2*lambda*W*(score*W(:,i)-score(:,i)*W(i,i))...
-                );
-            %f2(i,:) = f2(:,i)';
-        end
+    VVBaseScore = V*V*BaseScore;
+    lambda2 = 2*lambda;
+    up = zeros(V,V,V);
+    for i = 1:V
+        up(:,:,i) = inv(V*V*eye(V) + lambda2*(sum(W(:,i))*Diag - W(i,i)*W));
+    end
+    
+    while(err > 0.1) 
+        score1 = score;
         for i = 1:V
             score(:,i) = (...
-                V*V*eye(V) + ...
-                2*lambda*sum(W(:,i))*diag(Diag) -...
-                2*lambda*W(i,i)*W...
-                )\(...
-                V*V*O(:,i) +...
-                 2*lambda*W*(score1*W(:,i)-score1(:,i)*W(i,i))...
+                up(:,:,i)...
+                )*(...
+                VVBaseScore(:,i) +...
+                 lambda2*W*(score1*W(:,i)-score1(:,i)*W(i,i))...
                 );
-            %f1(i,:) = f1(:,i)';
         end
         err = dis(score,score1);
     end
 end
 
-global g_score;
-g_score = score;
+if g_debug
+    g_score = score;
+end
 
-
-P = sparse(size(O,1),size(O,2));
+P = sparse(size(O,1),size(O,2)); %warning: cannot use sparse(size(O))
 [~,SortedIdx] = sort(score(:),'descend');
 
 count = 0;
@@ -57,10 +63,14 @@ for i = 1:size(O(:))
         P(m,n) = 1;
         P(n,m) = 1;
         count = count + 1;
-        if(count == dropNum)
+        if(count == predictNum)
             break;
         end
     end
+end
+
+if g_debug
+    toc;
 end
 
 end
