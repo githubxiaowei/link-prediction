@@ -1,7 +1,7 @@
 
 close all;
 clear;
-
+tic;
 
 %define global variables
 global g_debug;
@@ -40,11 +40,11 @@ end
 g_intrinsic_similarity = g_intrinsic_features*g_intrinsic_features';
 
 % generate scarefree network and save it
-scale_free(g_vertice_num,4,4);
-ld = load('adj_1');
+%scale_free(g_vertice_num,5,5);
+%ld = load('adj_1');
 
-%simpleNetwork(g_vertice_num,20);
-%ld = load('simpleNetwork');
+simpleNetwork(g_vertice_num,10);
+ld = load('simpleNetwork');
 
 %customerNum = floor(g_vertice_num*0.7);
 %shoppingNetwork(customerNum,g_vertice_num-customerNum,4);
@@ -85,7 +85,7 @@ for idx = 1:simi_type_num
         predict(G,delete_per,total_iter);
 end
 
-
+toc;
 
 
 
