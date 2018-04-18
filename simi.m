@@ -88,8 +88,12 @@ S = zeros(size(adjacent_matrix));
         case "global"
             S = g_intrinsic_similarity;
             
+        case "degree_feature"
+            features = degree_feature(adjacent_matrix);
+            S = features*features';
+            
         otherwise
-            fprintf("ERROR: unknown similarity type.");
+            fprintf("ERROR: unknown similarity type.\n");
     end
 end
 

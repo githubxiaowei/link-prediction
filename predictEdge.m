@@ -5,7 +5,9 @@ global g_debug;
 global g_score;
 global g_similarity_only;
 global g_combine_similar_node_and_pair;
-global g_use_myscore;
+global g_use_bayes;
+global g_use_logistic_regression;
+global g_combine_bayes_logistic
 
 if g_debug
     tic;
@@ -14,52 +16,53 @@ end
 
 V = size(O,1);
 
-W = simi(O);
 
-if g_use_myscore
-    P = sparse(size(O,1),size(O,2)); 
-    score = myscore(O);
-    g_score = score;
-    return;
-end
 
-if g_similarity_only
-    score = W;
+if g_use_bayes 
+    score = bayes_score(O);
+elseif g_use_logistic_regression
+    score = logistic_regression_score(O);
+elseif g_combine_bayes_logistic
+    score = (bayes_score(O)+logistic_regression_score(O))/2;
 else
-    if g_combine_similar_node_and_pair
-        BaseScore = W; % combine node and pair similarity
+    W = simi(O);
+    if g_similarity_only
+        score = W;
     else
-        BaseScore = O; % use pair similarity only
-    end
-    Diag = diag(sum(W));
-    score = BaseScore+rand(V)/100;
-    err = 1; % initial error above threshold
-
-    lambda = 1;
-
-    VVBaseScore = V*V*BaseScore;
-    lambda2 = 2*lambda;
-    up = zeros(V,V,V);
-    for i = 1:V
-        up(:,:,i) = inv(V*V*eye(V) + lambda2*(sum(W(:,i))*Diag - W(i,i)*W));
-    end
-    
-    while(err > 0.1) 
-        score1 = score;
-        for i = 1:V
-            score(:,i) = (...
-                up(:,:,i)...
-                )*(...
-                VVBaseScore(:,i) +...
-                 lambda2*W*(score1*W(:,i)-score1(:,i)*W(i,i))...
-                );
+        if g_combine_similar_node_and_pair
+            BaseScore = W; % combine node and pair similarity
+        else
+            BaseScore = O; % use pair similarity only
         end
-        err = dis(score,score1);
+        Diag = diag(sum(W));
+        score = BaseScore+rand(V)/100;
+        err = 1; % initial error above threshold
+
+        lambda = 1;
+
+        VVBaseScore = V*V*BaseScore;
+        lambda2 = 2*lambda;
+        up = zeros(V,V,V);
+        for i = 1:V
+            up(:,:,i) = inv(V*V*eye(V) + lambda2*(sum(W(:,i))*Diag - W(i,i)*W));
+        end
+
+        while(err > 0.1) 
+            score1 = score;
+            for i = 1:V
+                score(:,i) = (...
+                    up(:,:,i)...
+                    )*(...
+                    VVBaseScore(:,i) +...
+                     lambda2*W*(score1*W(:,i)-score1(:,i)*W(i,i))...
+                    );
+            end
+            err = dis(score,score1);
+        end
     end
+
+
 end
-
-
-
 
 
 if g_debug

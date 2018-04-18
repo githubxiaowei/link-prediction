@@ -1,4 +1,4 @@
-function [score] = myscore(O)
+function [score] = bayes_score(O)
 %UNTITLED2 此处显示有关此函数的摘要
 %   此处显示详细说明
 V = size(O,1);
@@ -9,12 +9,6 @@ mat2 = deg_deg_conditional_pro(O,0);
 
 for i = 1:size(mat,1)
     for j = i:size(mat,2)  
-%         dominator = mat(i,j)+mat2(i,j);
-%         if dominator == 0
-%             mat(i,j) = 0;
-%         else
-%             mat(i,j) = mat(i,j)/dominator;
-%         end
         mat(i,j) = mat(i,j)/(mat(i,j)+mat2(i,j));
         mat(j,i) = mat(i,j);
     end
@@ -70,7 +64,7 @@ for i = 1:V
 end
 
 if mask
-    pro = (count+1)*pro_exist_edge/(num_of_edge_observed+2);
+    pro = (count+1)*pro_exist_edge/(num_of_edge_observed+2); % smoothing 
 else
     pro = (count+1)*pro_unexist_edge/(num_of_edge_unobserved+2);
 end
