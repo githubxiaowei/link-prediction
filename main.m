@@ -17,6 +17,7 @@ global g_O;
 global g_D;
 global g_intrinsic_features;
 global g_intrinsic_similarity;
+global g_use_myscore;
 
 
 %initiate global variables
@@ -25,12 +26,13 @@ g_vertice_num = 100;
 g_similarity_only = true;
 g_combine_similar_node_and_pair = false;
 g_similarity_type = "";
-g_predict_rate = 0.5;
+g_predict_rate = 0.3;
 g_delete_percent = 0.1;
-g_total_iteration = 10;
+g_total_iteration = 5;
 g_score = [];
 g_O = [];
 g_D = [];
+g_use_myscore = false;
 
 g_intrinsic_features = rand(g_vertice_num,10);
 for i =1:g_vertice_num
@@ -40,11 +42,11 @@ end
 g_intrinsic_similarity = g_intrinsic_features*g_intrinsic_features';
 
 % generate scarefree network and save it
-%scale_free(g_vertice_num,5,5);
-%ld = load('adj_1');
+scale_free(g_vertice_num,7,5);
+ld = load('adj_1');
 
-simpleNetwork(g_vertice_num,10);
-ld = load('simpleNetwork');
+% simpleNetwork(g_vertice_num,10);
+% ld = load('simpleNetwork');
 
 %customerNum = floor(g_vertice_num*0.7);
 %shoppingNetwork(customerNum,g_vertice_num-customerNum,4);
@@ -57,38 +59,51 @@ simi_type = {"CN","Salton","LHN","Jaccard","AA","RA",...
     "Karz","alpha","global"};
 simi_type_num = length(simi_type);
 
-acc_list = zeros(simi_type_num,3);
-auc_list = zeros(simi_type_num,3);
+acc_list = zeros(simi_type_num,4);
+auc_list = zeros(simi_type_num,4);
 
 delete_per = g_delete_percent;
 total_iter = g_total_iteration;
 
-for idx = 1:simi_type_num
+for idx = 6
     
     g_similarity_type = string(simi_type(idx))
     
+    
     % use node similarity to predict new edge
-    g_similarity_only = true
+    g_similarity_only=1;
+    g_combine_similar_node_and_pair = false;
+    g_use_myscore = false;
     [acc_list(idx,1),auc_list(idx,1)] = ...
         predict(G,delete_per,total_iter);
     
     % use node-pair similarity to predict new edge
-    g_similarity_only = false
-    g_combine_similar_node_and_pair = false
+    g_similarity_only = false;
+    g_combine_similar_node_and_pair = false;
+    g_use_myscore = false;
     [acc_list(idx,2),auc_list(idx,2)] = ...
         predict(G,delete_per,total_iter);
     
     % use both node and node-pair similarity to predict new edge
-    g_similarity_only = false
-    g_combine_similar_node_and_pair = true
+    g_similarity_only = false;
+    g_combine_similar_node_and_pair = true;
+    g_use_myscore = false;
     [acc_list(idx,3),auc_list(idx,3)] = ...
         predict(G,delete_per,total_iter);
+    
+    g_similarity_only = true;
+    g_combine_similar_node_and_pair = false;
+    g_use_myscore = true;
+    [acc_list(idx,4),auc_list(idx,4)] = ...
+        predict(G,delete_per,total_iter);
+
 end
+
 
 toc;
 
 
-
+global g_mat;
 
 
 

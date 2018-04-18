@@ -5,14 +5,23 @@ global g_debug;
 global g_score;
 global g_similarity_only;
 global g_combine_similar_node_and_pair;
+global g_use_myscore;
 
 if g_debug
     tic;
     fprintf("Predicting %d edge...",predictNum);
 end
 
-W = simi(O);
 V = size(O,1);
+
+W = simi(O);
+
+if g_use_myscore
+    P = sparse(size(O,1),size(O,2)); 
+    score = myscore(O);
+    g_score = score;
+    return;
+end
 
 if g_similarity_only
     score = W;
@@ -48,6 +57,10 @@ else
         err = dis(score,score1);
     end
 end
+
+
+
+
 
 if g_debug
     g_score = score;

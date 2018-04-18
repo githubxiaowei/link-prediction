@@ -74,6 +74,7 @@ Draw_Circle(O1);
 Draw_Circle(D);
 Draw_Circle(P);
 %}
+
 global g_O;
 global g_D;
 g_O = O1;
