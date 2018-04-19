@@ -1,6 +1,7 @@
 function [score] = bayes_score(O)
 %UNTITLED2 此处显示有关此函数的摘要
 %   此处显示详细说明
+tic;
 V = size(O,1);
 degree = sum(O);
 
@@ -33,7 +34,7 @@ for i = 1:V
         score(j,i) = score(i,j);
     end
 end
-
+toc;
 end
 
 function [pro] = deg_deg_conditional_pro(O,mask)

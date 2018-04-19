@@ -92,6 +92,17 @@ S = zeros(size(adjacent_matrix));
             features = degree_feature(adjacent_matrix);
             S = features*features';
             
+        case "max_degree"
+            degree = sum(adjacent_matrix);
+            max_degree = max(degree);
+            for i = 1:size(adjacent_matrix,1)
+                for j = i+1:size(adjacent_matrix,2)
+                    S(i,j) = max(degree(i),degree(j))/max_degree;
+                    S(j,i) = S(i,j);
+                    
+                end
+            end
+            
         otherwise
             fprintf("ERROR: unknown similarity type.\n");
     end

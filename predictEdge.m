@@ -47,7 +47,7 @@ else
             up(:,:,i) = inv(V*V*eye(V) + lambda2*(sum(W(:,i))*Diag - W(i,i)*W));
         end
 
-        while(err > 0.1) 
+        while(err > 0.1)
             score1 = score;
             for i = 1:V
                 score(:,i) = (...
