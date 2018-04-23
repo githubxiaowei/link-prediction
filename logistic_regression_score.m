@@ -17,7 +17,7 @@ features = features(:,1:max_degree);
 global g_tmp;
 g_tmp = features;
 
-weights = rand(1,1);
+weights = rand(2,1);
 aver_weights = zeros(size(weights));
 
 alpha = 0.1;
@@ -28,7 +28,7 @@ for iteration = 1:10
             if O(i,j) == 0 && rand(1)>rate
                 continue
             end
-        x = [max(degree(j),degree(i))/max_degree];
+        x = [min(degree(j),degree(i))/max_degree max(degree(j),degree(i))/max_degree];
         h = 1/(1+exp(-x*weights));
         weights = weights + alpha*(O(i,j)-h)*x';
         end
@@ -39,12 +39,12 @@ end
 score = zeros(V);
 for i = 1:V
     for j = i+1:V
-        x = [max(degree(j),degree(i))/max_degree];
+        x = [min(degree(j),degree(i))/max_degree max(degree(j),degree(i))/max_degree];
         score(i,j) = 1/(1+exp(-x*aver_weights));
         score(j,i) = score(i,j);
     end
 end
-
+g_tmp = aver_weights;
 
 end
 

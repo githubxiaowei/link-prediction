@@ -23,7 +23,7 @@ global g_combine_bayes_logistic;
 
 %initiate global variables
 g_debug = false;
-g_vertice_num = 100;
+g_vertice_num = 1000;
 g_similarity_only = true;
 g_combine_similar_node_and_pair = false;
 g_similarity_type = "";
@@ -45,7 +45,7 @@ end
 g_intrinsic_similarity = g_intrinsic_features*g_intrinsic_features';
 
 % generate scarefree network and save it
-scale_free(g_vertice_num,7,5);
+scale_free(g_vertice_num,10,10);
 ld = load('adj_1');
 
 % simpleNetwork(g_vertice_num,10);
@@ -68,7 +68,7 @@ auc_list = zeros(simi_type_num+2,3);
 delete_per = g_delete_percent;
 total_iter = g_total_iteration;
 
-for idx = [11]
+for idx = []
     g_similarity_type = string(simi_type(idx))
     
     
