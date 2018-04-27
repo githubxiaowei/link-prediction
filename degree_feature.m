@@ -10,6 +10,7 @@ for i = 1:V
             features(i,j) = degree(j);
         end
     end
+    features(i,i) = degree(i);
 end
 
 for i = 1:V
@@ -23,7 +24,7 @@ for i = 1:V
     features(i,:) = tmp;
 end
 
-for i =1:V
+parfor i =1:V
     len = sqrt(sum(features(i,:).^2));
     features(i,:) = features(i,:)./len;
 end

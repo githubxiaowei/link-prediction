@@ -9,10 +9,10 @@ S = zeros(size(adjacent_matrix));
 
     switch type
         
-        case "CN"
+        case 'CN'
             S = adjacent_matrix^2;
             
-        case "LHN"
+        case 'LHN'
             degree = sum(adjacent_matrix);
             for i = 1:size(adjacent_matrix,1)
                 for j = i:size(adjacent_matrix,2)
@@ -22,7 +22,7 @@ S = zeros(size(adjacent_matrix));
                 end
             end          
         
-        case "Jaccard"
+        case 'Jaccard'
             for i = 1:size(adjacent_matrix,1)
                 for j = i:size(adjacent_matrix,2)
                     S(i,j) = sum(adjacent_matrix(i,:) & adjacent_matrix(j,:))...
@@ -31,7 +31,7 @@ S = zeros(size(adjacent_matrix));
                 end
             end
 
-        case "Salton"
+        case 'Salton'
             degree = sum(adjacent_matrix);
             for i = 1:size(adjacent_matrix,1)
                 for j = i:size(adjacent_matrix,2)
@@ -41,7 +41,7 @@ S = zeros(size(adjacent_matrix));
                 end
             end
             
-        case "AA"
+        case 'AA'
             degree = sum(adjacent_matrix);
             for i = 1:size(adjacent_matrix,1)
                 for j = i:size(adjacent_matrix,2)
@@ -50,7 +50,7 @@ S = zeros(size(adjacent_matrix));
                 end
             end
             
-        case "RA"
+        case 'RA'
             degree = sum(adjacent_matrix);
             for i = 1:size(adjacent_matrix,1)
                 for j = i:size(adjacent_matrix,2)
@@ -59,12 +59,12 @@ S = zeros(size(adjacent_matrix));
                 end
             end
   
-        case "Karz"
+        case 'Karz'
             belta = 0.9/max(eig(adjacent_matrix));
             S = inv(eye(size(adjacent_matrix))-belta*adjacent_matrix)...
                 -eye(size(adjacent_matrix));
 
-        case "alpha"
+        case 'alpha'
             degree = sum(adjacent_matrix);
             alpha_global = alpha(adjacent_matrix);
 
@@ -85,14 +85,14 @@ S = zeros(size(adjacent_matrix));
                 end
             end
             
-        case "global"
+        case 'global'
             S = g_intrinsic_similarity;
             
-        case "degree_feature"
+        case 'degree_feature'
             features = degree_feature(adjacent_matrix);
             S = features*features';
             
-        case "max_degree"
+        case 'max_degree'
             degree = sum(adjacent_matrix);
             max_degree = max(degree);
             for i = 1:size(adjacent_matrix,1)
@@ -104,7 +104,7 @@ S = zeros(size(adjacent_matrix));
             end
             
         otherwise
-            fprintf("ERROR: unknown similarity type.\n");
+            fprintf('ERROR: unknown similarity type.\n');
     end
 end
 

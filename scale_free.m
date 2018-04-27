@@ -12,7 +12,7 @@ for J = 1 : I
     format long;
 
     adjacent_matrix = sparse( m0 , m0 ) ;  
-    for i = 1 : m0
+    parfor i = 1 : m0
         for j = 1 : m0
             if j ~= i
                 adjacent_matrix( i , j ) = 1 ;
@@ -55,7 +55,7 @@ for J = 1 : I
 
     number_of_nodes_with_equal_degree = zeros( 1 , N ) ;   
 
-    for i = 1 : N
+    parfor i = 1 : N
         number_of_nodes_with_equal_degree(i) = length( find( node_degree == i ) ) ;  
     end
     realization_of_distribution( J , : ) = number_of_nodes_with_equal_degree ;

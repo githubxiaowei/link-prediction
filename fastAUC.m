@@ -4,7 +4,7 @@ function [auc] = fastAUC(O,D,f)
 global g_debug
 
 if g_debug
-    fprintf("Calculating AUC...");
+    fprintf('Calculating AUC...');
     tic;
 end
 
@@ -22,7 +22,7 @@ part2(:,1) = unwanted(:);
 
 whole = [part1;part2];
 
-whole = sortrows(whole,1,'ascend');
+whole = sortrows(whole,1);
 
 n1 = 0;
 n2 = 0;

@@ -5,7 +5,7 @@ function [disn, a] = distribution(adjacent_matrix)
 node_num = size(adjacent_matrix,1);
 node_degree = sum( adjacent_matrix);
 disn = zeros( 1 , node_num ) ;   
-for i = 1 : node_num
+parfor i = 1 : node_num
     disn(i) = length( find( node_degree == i ) ) ;  
 end
 

@@ -11,7 +11,7 @@ global g_combine_bayes_logistic
 
 if g_debug
     tic;
-    fprintf("Predicting %d edge...",predictNum);
+    fprintf('Predicting %d edge...',predictNum);
 end
 
 V = size(O,1);
@@ -43,13 +43,13 @@ else
         VVBaseScore = V*V*BaseScore;
         lambda2 = 2*lambda;
         up = zeros(V,V,V);
-        for i = 1:V
+        parfor i = 1:V
             up(:,:,i) = inv(V*V*eye(V) + lambda2*(sum(W(:,i))*Diag - W(i,i)*W));
         end
 
         while(err > 0.1)
             score1 = score;
-            for i = 1:V
+            parfor i = 1:V
                 score(:,i) = (...
                     up(:,:,i)...
                     )*(...
