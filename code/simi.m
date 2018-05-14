@@ -45,7 +45,7 @@ S = zeros(size(adjacent_matrix));
             degree = sum(adjacent_matrix);
             for i = 1:size(adjacent_matrix,1)
                 for j = i:size(adjacent_matrix,2)
-                    mask = adjacent_matrix(i,:) | adjacent_matrix(j,:);
+                    mask = adjacent_matrix(i,:) & adjacent_matrix(j,:);
                     S(i,j) = sum(1./degree(logical(mask)));
                 end
             end
@@ -54,7 +54,7 @@ S = zeros(size(adjacent_matrix));
             degree = sum(adjacent_matrix);
             for i = 1:size(adjacent_matrix,1)
                 for j = i:size(adjacent_matrix,2)
-                    mask = adjacent_matrix(i,:) | adjacent_matrix(j,:);
+                    mask = adjacent_matrix(i,:) & adjacent_matrix(j,:);
                     S(i,j) = sum(1./log(degree(logical(mask))+0.1));
                 end
             end
@@ -85,13 +85,39 @@ S = zeros(size(adjacent_matrix));
                 end
             end
             
+            case 'alpha2'
+            degree = sum(adjacent_matrix);
+            alpha_global = alpha(adjacent_matrix);
+            for i = 1:size(adjacent_matrix,1)
+                for j = i+1:size(adjacent_matrix,2)
+                    mask = adjacent_matrix(i,:) | adjacent_matrix(j,:);
+                    mask(i) = 1;
+                    mask(j) = 1;
+                    neibors = find(mask==1);
+                    N = adjacent_matrix(neibors,neibors);
+                    S(i,j) =  alpha(N);
+                    S(j,i) = S(i,j);
+                end
+            end     
+            
         case 'global'
             S = g_intrinsic_similarity;
             
         case 'degree_feature'
             features = degree_feature(adjacent_matrix);
             S = features*features';
-            
+         
+        case 'PA'
+            degree = sum(adjacent_matrix);
+            max_degree = max(degree);
+            max_degree2 = max_degree*max_degree;
+            for i = 1:size(adjacent_matrix,1)
+                for j = i+1:size(adjacent_matrix,2)
+                    S(i,j) = degree(i)*degree(j)/max_degree2;
+                    S(j,i) = S(i,j);
+                end
+            end
+         
         case 'max_degree'
             degree = sum(adjacent_matrix);
             max_degree = max(degree);
@@ -99,7 +125,6 @@ S = zeros(size(adjacent_matrix));
                 for j = i+1:size(adjacent_matrix,2)
                     S(i,j) = max(degree(i),degree(j))/max_degree;
                     S(j,i) = S(i,j);
-                    
                 end
             end
             
