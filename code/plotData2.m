@@ -39,20 +39,6 @@ y = varargin{2};
 fitPoints = varargin{3};
 %data from the sheet is stored in two array
 
-if(~isempty(fitPoints))
-p=polyfit(x(fitPoints),y(fitPoints),1);
-
-xi = x(fitPoints);
-yi=polyval(p,xi);
-ym = mean(y(fitPoints));
-
-R2 = sum((yi-ym).^2)/sum((y(fitPoints) - ym).^2)
-plot(xi,yi,'k','linewidth',2);
-hold on;
-%show the fitting line
-sprintf('Y=%0.5gX+%0.5g R^2 = %0.5g',p(1),p(2),R2)
-end
-%plot the curve in black('k') with its linewidth 2
 
 plot(x,y,'go','MarkerEdgeColor','r','MarkerFaceColor','r','MarkerSize',6);
 plot(x,y,'k','linewidth',2,'color','r');

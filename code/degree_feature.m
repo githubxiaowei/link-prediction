@@ -24,7 +24,7 @@ for i = 1:V
     features(i,:) = tmp;
 end
 
-parfor i =1:V
+for i =1:V
     len = sqrt(sum(features(i,:).^2));
     features(i,:) = features(i,:)./len;
 end

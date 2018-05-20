@@ -12,7 +12,7 @@ for J = 1 : I
     format long;
 
     adjacent_matrix = sparse( m0 , m0 ) ;  
-    parfor i = 1 : m0
+    for i = 1 : m0
         for j = 1 : m0
             if j ~= i
                 adjacent_matrix( i , j ) = 1 ;
@@ -55,7 +55,7 @@ for J = 1 : I
 
     number_of_nodes_with_equal_degree = zeros( 1 , N ) ;   
 
-    parfor i = 1 : N
+    for i = 1 : N
         number_of_nodes_with_equal_degree(i) = length( find( node_degree == i ) ) ;  
     end
     realization_of_distribution( J , : ) = number_of_nodes_with_equal_degree ;
@@ -63,16 +63,17 @@ for J = 1 : I
     save(['adj_',num2str(J)],'adjacent_matrix');
 end  
 
-%{ 
+
 %plot degree distribution 
 
 average = sum( realization_of_distribution )/ ( I * N );
-loglog( 1:N , average , '*' )  
-axis([1 N 0.0000001 0.9])
+
+loglog( 1:N , average , 'o' )  
+axis([1 100 0.0001 1])
 hold on;
-x = 1:N;
+x = 1:100;
 y = 2 * m^2 * x .^ ( -3 ) ;
-loglog( x , y , 'r' ) ;  %  p(k)=2*m^2*k^(-3)
+loglog( x , y ,'k') ;  %  p(k)=2*m^2*k^(-3)
 
 %}
 toc;

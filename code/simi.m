@@ -40,7 +40,33 @@ S = zeros(size(adjacent_matrix));
                     S(j,i) = S(i,j);
                 end
             end
-            
+        case 'Sorensen'
+            degree = sum(adjacent_matrix);
+            for i = 1:size(adjacent_matrix,1)
+                for j = i:size(adjacent_matrix,2)
+                    S(i,j) = adjacent_matrix(i,:)*adjacent_matrix(j,:)'...
+                        /(degree(i)*0.5+degree(j)*0.5);
+                    S(j,i) = S(i,j);
+                end
+            end
+        case 'HPI'
+            degree = sum(adjacent_matrix);
+            for i = 1:size(adjacent_matrix,1)
+                for j = i:size(adjacent_matrix,2)
+                    S(i,j) = adjacent_matrix(i,:)*adjacent_matrix(j,:)'...
+                        /min(degree(i),degree(j));
+                    S(j,i) = S(i,j);
+                end
+            end
+        case 'HDI'
+            degree = sum(adjacent_matrix);
+            for i = 1:size(adjacent_matrix,1)
+                for j = i:size(adjacent_matrix,2)
+                    S(i,j) = adjacent_matrix(i,:)*adjacent_matrix(j,:)'...
+                        /max(degree(i),degree(j));
+                    S(j,i) = S(i,j);
+                end
+            end
         case 'AA'
             degree = sum(adjacent_matrix);
             for i = 1:size(adjacent_matrix,1)
@@ -64,7 +90,7 @@ S = zeros(size(adjacent_matrix));
             S = inv(eye(size(adjacent_matrix))-belta*adjacent_matrix)...
                 -eye(size(adjacent_matrix));
 
-        case 'alpha'
+        case 'LS'
             degree = sum(adjacent_matrix);
             alpha_global = alpha(adjacent_matrix);
 

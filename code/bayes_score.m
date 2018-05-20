@@ -3,7 +3,7 @@ function [score] = bayes_score(O)
 %   此处显示详细说明
 tic;
 V = size(O,1);
-degree = sum(O);
+degree = sum(O)+1;
 
 mat = deg_deg_conditional_pro(O,1);
 mat2 = deg_deg_conditional_pro(O,0);
@@ -38,7 +38,7 @@ toc;
 end
 
 function [pro] = deg_deg_conditional_pro(O,mask)
-degree = assign(sum(O));
+degree = assign(sum(O))+1;
 V = size(O,1);
 
 num_of_edge_total = V*(V-1)/2;
@@ -46,7 +46,7 @@ num_of_edge_observed = sum(degree)/2;
 num_of_edge_unobserved = num_of_edge_total-num_of_edge_observed;
 
 max_deg = max(degree);
-count = zeros(max_deg);
+count = zeros(max_deg+1);
 
 pro_exist_edge = num_of_edge_observed/num_of_edge_total;
 pro_unexist_edge = 1-pro_exist_edge;

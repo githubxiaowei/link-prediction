@@ -1,34 +1,26 @@
-function [average_acc,average_auc] = predict(G,per,total_iter)
+function [average_acc,average_auc] = predict()
 % 此处显示有关此函数的摘要
 %   此处显示详细说明
 
 global g_predict_rate;
 global g_debug;
+global g_G;
+global g_kFold;
+global g_folds;
 
+G = g_G;
 V = size(G,1);
 E = length(find(G))/2;
 
-if g_debug
-    fprintf('num of vertices in G: %g\n',V);
-    fprintf('num of edges in fully-connected G: %g\n',V*(V-1)/2);
-    fprintf('num of edges in G: %g\n',E);
-    fprintf('num of elements in matrix G: %g\n',E*2);
-end
+
 
 average_acc = 0;
 average_auc = 0;
 
-for iter = 1:total_iter
-    if g_debug
-        fprintf('%g%% of edges to be deleted.......\n',100*per);
-    end
+for iter = 1:g_kFold
     
-    [O,D,done] = deleteEdges(G,per);
-    if(~done)
-        fprintf('ERROR: can not delete %g%% edges\n',100*per );
-        return;
-    end
-    
+    D = g_folds(:,:,iter);
+    O = double(G&~D);
     dropNum = length(find(D))/2;
     remainNum = length(find(O))/2;
     
@@ -63,21 +55,11 @@ for iter = 1:total_iter
 
 end
 
-average_acc = average_acc/total_iter;
-average_auc = average_auc/total_iter;
+average_acc = average_acc/g_kFold;
+average_auc = average_auc/g_kFold;
 fprintf('average_acc: %10g\taverage_auc %10g\n',...
     average_acc,average_auc);
 
-%{
-Draw_Circle(G);
-Draw_Circle(O1);
-Draw_Circle(D);
-Draw_Circle(P);
-%}
 
-global g_O;
-global g_D;
-g_O = O1;
-g_D = D;
 end
 
